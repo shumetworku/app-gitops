@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: newapp
+  template:
+    metadata:
+      labels:
+        app: newapp
+    spec:
+      containers:
+      - name: newapp
+        image: shumet/newapp:latest
+        ports:
+        - containerPort: 5002
+        imagePullPolicy: Always  # ensure fresh pull on every sync
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5002
+  selector:
+    app: newapp
